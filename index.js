@@ -1,28 +1,24 @@
 const express = require('express')
 require('dotenv').config()
 const cors = require('cors')
-const ConnectToDB  = require('./Config/DB_Config')
+const bodyParser = require('body-parser')
 
-const user = require('./Routes/UserRoutes/userRoute')
-const property = require('./Routes/PropertyRoutes/addNewProperty')
+const config = require('./config')
+
+// const user = require('./Routes/')
+const propertyRoutes = require('./Routes/propertyRouter')
+
 
 const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use(bodyParser.json())
 
-const Port = process.env.PORT || 5000
+const Port = config.port || 8080
 
-app.use('/api/user', user)
-app.use('/api/property', property)
+app.use('/api', propertyRoutes.routes);
 
-//Trial Route
-app.get('/', (req,res)=>{
-    res.send("Working Fine")
-})
-
-app.listen(Port, ()=>{
+app.listen(config.port || 8080, ()=>{
     console.log(`Server is Running on Port ${Port}`)
 })
-
-ConnectToDB()
