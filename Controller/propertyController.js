@@ -1,13 +1,11 @@
 const db = require('../Firebase/DB_Config')
 const {collection, setDoc, doc, getDocs, deleteDoc,updateDoc } = require('firebase/firestore');
 const Property = require('../Models/Property');
-const res = require('express/lib/response');
 
 // const propCollection = ;
 const addProperty = async (req, res) => {
     try {
         const data = req.body;
-        console.log(req.body.title);
         await setDoc(doc(db, 'properties', req.body.title), data);
         res.send('Record added sucessfuly');
     } catch (error) {
