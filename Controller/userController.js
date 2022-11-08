@@ -6,9 +6,9 @@ const addUser = async (req, res) => {
     try {
         const data = req.body;
         await setDoc(doc(db, 'user', req.body.name), data);
-        res.send("User Sucessfuly added");
+        res.json({'message' : "User Sucessfuly added"});
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({'message' : error.message});
     }
 }
 
@@ -17,7 +17,7 @@ const getUsers = async (req, res) => {
         const data = await getDocs(collection(db, 'user'));
         const userList = [];
         if(data.empty){
-            res.status(404).send("No users present");
+            res.status(404).json({'message' : "No users present"});
         } else {
             data.forEach((doc) => {
                 const user = new User(
@@ -28,10 +28,10 @@ const getUsers = async (req, res) => {
                 )
                 userList.push(user);
             })
-            res.send(userList);
+            res.json({'message' : userList});
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({'message' : error.message});
     }
 }
 

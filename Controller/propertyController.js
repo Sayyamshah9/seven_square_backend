@@ -7,9 +7,9 @@ const addProperty = async (req, res) => {
     try {
         const data = req.body;
         await setDoc(doc(db, 'properties', req.body.title), data);
-        res.send('Record added sucessfuly');
+        res.json({'message' : 'Record added sucessfuly'});
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({'message' : error.message});
         console.log(error)
     }
 }
@@ -19,7 +19,7 @@ const getProperties = async (req, res) => {
         const data = await getDocs(collection(db, 'properties'))
         const propList = [];
         if(data.empty) {
-            res.status(404).send("No Properties Found");
+            res.status(404).json({'message' : 'No Properties Found'});
         } else {
             data.forEach((doc) => {
                 const property = new Property(
@@ -35,10 +35,10 @@ const getProperties = async (req, res) => {
                 )
                 propList.push(property);
             })
-            res.send(propList);
+            res.json({'message' : propList});
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({'message' : error.message});
         console.log(error)
     }
 }
@@ -47,7 +47,7 @@ const getProperty = async (req, res) => {
     try {
         const data = await getDocs(doc(db, 'properties', req.params.id));
         if(data.empty) {
-            res.status(404).send("No Properties Found");
+            res.status(404).json({'message' : 'No Properties Found'});
         } else {
             const property = new Property(
                 doc.data().title,
@@ -60,10 +60,10 @@ const getProperty = async (req, res) => {
                 doc.data().bedrooms,
                 doc.data().ytLink?doc.data().ytLink:null,
             );
-            res.send(property);
+            res.json({'message' : property});
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({'message' : error.message});
         console.log(error)
     }
 }
@@ -74,9 +74,9 @@ const updateProperty = async (req, res) => {
         console.log(req.params.id);
         console.log(req.body);
         await updateDoc(doc(db, 'properties', req.params.id), data);
-        res.send("Record updated Sucessfuly")
+        res.json({'message' : 'Record updated Sucessfuly'})
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({'message' : error.message});
         console.log(error)
     }
 }
@@ -85,9 +85,9 @@ const deleteProperty = async (req, res) => {
     try {
         const data = req.body;
         await deleteDoc(doc(db, 'properties', req.params.id));
-        res.send("Record deleted succesfuly");
+        res.json({'message' : 'Record deleted succesfuly'});
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({'message' : error.message});
         console.log(error)
     }
 }
