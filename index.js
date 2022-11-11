@@ -1,9 +1,7 @@
 const express = require('express');
-require('dotenv').config();
 const cors = require('cors');
-const bodyParser = require('body-parser');
 
-const config = require('./config');
+const config = require('./Config/config');
 
 const propertyRoutes = require('./Routes/propertyRouter');
 const userRoutes = require('./Routes/userRoute');

@@ -1,12 +1,10 @@
-const db = require('../Firebase/DB_Config')
-const {collection, setDoc, doc, getDocs, deleteDoc,updateDoc } = require('firebase/firestore');
-const Property = require('../Models/Property');
+const db = require('../Config/DB_Config')
 
-// const propCollection = ;
+const propCollection = db.collection('properties')
 const addProperty = async (req, res) => {
     try {
         const data = req.body;
-        await setDoc(doc(db, 'properties', req.body.title), data);
+        propCollection.doc(data.title).set(data);
         res.json({'message' : 'Record added sucessfuly'});
     } catch (error) {
         res.status(400).json({'message' : error.message});
@@ -16,24 +14,13 @@ const addProperty = async (req, res) => {
 
 const getProperties = async (req, res) => {
     try {
-        const data = await getDocs(collection(db, 'properties'))
+        const data = await propCollection.get()
         const propList = [];
         if(data.empty) {
             res.status(404).json({'message' : 'No Properties Found'});
         } else {
             data.forEach((doc) => {
-                const property = new Property(
-                    doc.data().title,
-                    doc.data().price,
-                    doc.data().description,
-                    doc.data().address,
-                    doc.data().propertyActionType,
-                    doc.data().livingArea,
-                    doc.data().furnished,
-                    doc.data().bedrooms,
-                    doc.data().ytLink?doc.data().ytLink:null,
-                )
-                propList.push(property);
+                propList.push(doc.data())
             })
             res.json({'message' : propList});
         }
@@ -45,22 +32,36 @@ const getProperties = async (req, res) => {
 
 const getProperty = async (req, res) => {
     try {
-        const data = await getDocs(doc(db, 'properties', req.params.id));
+        const data = await propCollection.where('title', '==', req.query.title).get();
+        const propList = [];
+        if(doc.empty) {
+            res.status(404).json({'message' : 'No Properties Found'});
+        } else {
+            data.forEach((doc) => {
+                propList.push(doc.data());
+            })
+            res.json({'message' : propList,
+             'docId' : doc.id,
+            });
+        }
+    } catch (error) {
+        res.status(400).json({'message' : error.message});
+        console.log(error)
+    }
+}
+
+const getPropertiesByType = async(req, res) => {
+    try {
+        const data = await propCollection.where('propertyActionType', '==', req.query.propertyActionType)
+        .where('type', '==', req.query.type).get()
+        const propList = [];
         if(data.empty) {
             res.status(404).json({'message' : 'No Properties Found'});
         } else {
-            const property = new Property(
-                doc.data().title,
-                doc.data().price,
-                doc.data().description,
-                doc.data().address,
-                doc.data().propertyActionType,
-                doc.data().livingArea,
-                doc.data().furnished,
-                doc.data().bedrooms,
-                doc.data().ytLink?doc.data().ytLink:null,
-            );
-            res.json({'message' : property});
+            data.forEach((doc) => {
+                propList.push(doc.data());
+            })
+            res.json({'message' : propList});
         }
     } catch (error) {
         res.status(400).json({'message' : error.message});
@@ -71,9 +72,7 @@ const getProperty = async (req, res) => {
 const updateProperty = async (req, res) => {
     try {
         const data = req.body;
-        console.log(req.params.id);
-        console.log(req.body);
-        await updateDoc(doc(db, 'properties', req.params.id), data);
+        await propCollection.doc(req.query.id).update(data);
         res.json({'message' : 'Record updated Sucessfuly'})
     } catch (error) {
         res.status(400).json({'message' : error.message});
@@ -83,9 +82,18 @@ const updateProperty = async (req, res) => {
 
 const deleteProperty = async (req, res) => {
     try {
-        const data = req.body;
-        await deleteDoc(doc(db, 'properties', req.params.id));
-        res.json({'message' : 'Record deleted succesfuly'});
+        const data = await propCollection.where('title', '==', req.query.title).get();
+        const idList = []
+        if(data.empty){
+            res.status(404).json({'message' : 'No Properties Found'});
+        } else {
+            data.forEach((doc) => {
+                idList.push(doc.id)
+            })
+            await propCollection.doc(idList[0]).delete();
+            res.json({'message' : 'Record deleted succesfuly'});
+        }
+        
     } catch (error) {
         res.status(400).json({'message' : error.message});
         console.log(error)
@@ -96,6 +104,7 @@ module.exports = {
     addProperty,
     getProperties,
     getProperty,
+    getPropertiesByType,
     updateProperty,
     deleteProperty
 }
