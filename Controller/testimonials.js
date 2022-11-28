@@ -15,7 +15,7 @@ const addTestimonials = async (req, res) => {
 
 const getTestimonials = async (req, res) => {
 	try {
-		const data = await testCollection.get();
+		const data = await testCollection.limit(3).get();
 		const testList = [];
 		if (data.empty) {
 			res.status(404).json({ message: "No Properties Found" });
