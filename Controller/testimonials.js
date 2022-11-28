@@ -13,10 +13,36 @@ const addTestimonials = async (req, res) => {
 	}
 };
 
-const getTestimonials = async (req, res) => {
+const getThreeTestimonials = async (req, res) => {
 	try {
 		const data = await testCollection.limit(3).get();
-		const testList = [];
+		let testList = [];
+		if (data.empty) {
+			res.status(404).json({ message: "No Properties Found" });
+		} else {
+			data.forEach((doc) => {
+				const payload = doc.data();
+				payload.id = doc.id;
+				testList.push(payload);
+			});
+			// console.log(first);
+			// console.log(testList);
+			// testList = testList.sort(() => 0.5 - Math.random);
+			// testList = testList.slice(0, 3);
+			// console.log('second');
+			// console.log(testList);
+			res.json({ message: testList });
+		}
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+		console.log(error);
+	}
+};
+
+const getTestimonials = async (req, res) => {
+	try {
+		const data = await testCollection.get();
+		let testList = [];
 		if (data.empty) {
 			res.status(404).json({ message: "No Properties Found" });
 		} else {
@@ -45,6 +71,7 @@ const deleteTestimonial = async (req, res) => {
 
 module.exports = {
 	addTestimonials,
+	getThreeTestimonials,
 	getTestimonials,
 	deleteTestimonial,
 };

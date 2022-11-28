@@ -1,9 +1,10 @@
 const express = require("express");
-const { addTestimonials, getTestimonials, deleteTestimonial } = require("../Controller/testimonials");
+const { addTestimonials, getThreeTestimonials, deleteTestimonial, getTestimonials } = require("../Controller/testimonials");
 
 const router = express.Router();
 
 router.post("/addTestimonial", addTestimonials);
+router.get("/getThreeTestimonials", getThreeTestimonials);
 router.get("/getTestimonials", getTestimonials);
 router.delete("/deleteTestimonial", deleteTestimonial);
 
