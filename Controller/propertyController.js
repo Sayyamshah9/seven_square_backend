@@ -4,7 +4,7 @@ const propCollection = db.collection("properties");
 const addProperty = async (req, res) => {
 	try {
 		const data = req.body;
-		propCollection.add(data);
+		await propCollection.add(data);
 		res.json({ message: "Record added sucessfuly" });
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -34,7 +34,27 @@ const getProperties = async (req, res) => {
 
 const getPlpProperties = async (req, res) => {
 	try {
-		const data = await propCollection.where("display", "==", true).get();
+		const data = await propCollection.where("display", "==", true).where("feature", "==", false).get();
+		const propList = [];
+		if (data.empty) {
+			res.status(404).json({ message: "No Properties Found" });
+		} else {
+			data.forEach((doc) => {
+				const payload = doc.data();
+				payload.id = doc.id;
+				propList.push(payload);
+			});
+			res.json({ message: propList });
+		}
+	} catch (error) {
+		res.status(400).json({ message: error.message });
+		console.log(error);
+	}
+};
+
+const getFeaProp = async (req, res) => {
+	try {
+		const data = await propCollection.where("feature", "==", true).get();
 		const propList = [];
 		if (data.empty) {
 			res.status(404).json({ message: "No Properties Found" });
@@ -119,6 +139,7 @@ module.exports = {
 	getProperties,
 	getProperty,
 	getPlpProperties,
+	getFeaProp,
 	getPropertiesByType,
 	updateProperty,
 	deleteProperty,
