@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const Port = 8080;
+const Port = process.env.PORT || 8080;
 
 app.use("/api/property", propertyRoutes.routes);
 app.use("/api/user", userRoutes.routes);
