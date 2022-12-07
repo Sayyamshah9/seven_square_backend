@@ -6,6 +6,7 @@ const cors = require("cors");
 const propertyRoutes = require("./Routes/propertyRouter");
 const userRoutes = require("./Routes/userRoute");
 const testimonialRoutes = require("./Routes/testimonialRouter");
+const detailsRoutes = require("./Routes/detailsRouter");
 
 const app = express();
 
@@ -17,6 +18,7 @@ const Port = process.env.PORT || 8080;
 app.use("/api/property", propertyRoutes.routes);
 app.use("/api/user", userRoutes.routes);
 app.use("/api/testimonial", testimonialRoutes.routes);
+app.use("/api/details", detailsRoutes.routes);
 
 app.get("/", (req, res) => {
 	res.json({ ApiStatus: "7Square realtors Api is Working" });

@@ -15,7 +15,7 @@ const addTestimonials = async (req, res) => {
 
 const getThreeTestimonials = async (req, res) => {
 	try {
-		const data = await testCollection.limit(3).get();
+		const data = await testCollection.get();
 		let testList = [];
 		if (data.empty) {
 			res.status(404).json({ message: "No Properties Found" });
@@ -25,17 +25,20 @@ const getThreeTestimonials = async (req, res) => {
 				payload.id = doc.id;
 				testList.push(payload);
 			});
-			// console.log(first);
+			// console.log('first');
+			console.log(testList);
+			testList = testList.sort(() => {
+				console.log(0.5 - Math.random());
+				return 0.5 - Math.random();
+			});
+			testList = testList.slice(0, 3);
+			// console.log("second");
 			// console.log(testList);
-			// testList = testList.sort(() => 0.5 - Math.random);
-			// testList = testList.slice(0, 3);
-			// console.log('second');
-			// console.log(testList);
+			console.log(0.5 - Math.random());
 			res.json({ message: testList });
 		}
 	} catch (error) {
 		res.status(400).json({ message: error.message });
-		console.log(error);
 	}
 };
 
