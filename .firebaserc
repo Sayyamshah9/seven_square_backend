@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "square-realtors"
+  },
+  "targets": {
+    "square-realtors": {
+      "hosting": {
+        "backend": [
+          "square-realtors"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
